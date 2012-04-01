@@ -1,17 +1,22 @@
 #ifndef CMIDI_EVENT_DOT_H
 #define CMIDI_EVENT_DOT_H
 
+#include "midi_port.h"
+#include "event.h"
 #include <vector>
 
-class midi_event 
+class midi_event : public event
 {
 	private:
 		int message_size;
-		uint8_t* bytes;		
+		uint8_t* bytes;
+		midi_port* port;
 	
 	public:
-		midi_event(std::vector<uint8_t>* message);
+		midi_event(std::vector<uint8_t>* message,midi_port* port);
 		~midi_event();
+		
+		void handle();
 
 		int size();
 		uint8_t get_status();

@@ -5,7 +5,6 @@
 #include <lua.hpp>
 #include "lua_wrapper.h"
 #include "rtmidi.h"
-#include "midi_event.h"
 
 class midi_port
 {
@@ -15,11 +14,14 @@ class midi_port
 		bool status_registry[127];
 		bool active;
 		
+		lua_State* L;
+		
 	public:
-		midi_port();
-		midi_port(int in_port);
+		midi_port(lua_State* L);
+		midi_port(int in_port, lua_State* L);
 		//bool is_registered(uint8_t status);
 		void ignore_type(bool sysex, bool time, bool sense);
+		lua_State* get_lua();
 		
 		//lua shit
 		static const char* METATABLE_NAME;
@@ -30,8 +32,6 @@ class midi_port
 		
 		static int new_midi_port(lua_State *L);
 		static int collect_midi_port(lua_State *L);
-		
-		
 };
 
 #endif

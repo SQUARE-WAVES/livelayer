@@ -12,7 +12,8 @@ event_manager::event_manager(lua_wrapper* l)
 
 void event_manager::midi_event_handler(midi_event& ev,midi_port* port)
 {
-	//meta is on top of the stack
+	ev.handle();
+	/*/meta is on top of the stack
 	luaL_getmetatable(*L,midi_port::METATABLE_NAME);
 	lua_pushlightuserdata(*L,(void*)port);
 	lua_gettable(*L,-2);
@@ -35,7 +36,7 @@ void event_manager::midi_event_handler(midi_event& ev,midi_port* port)
 		lua_pushnumber(*L,ev[i]);
 	}
 	
-	lua_call(*L,ev.size(),0);
+	lua_call(*L,ev.size(),0);*/
 }
 
 

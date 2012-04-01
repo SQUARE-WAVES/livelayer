@@ -2,8 +2,9 @@
 #include <vector>
 #include "midi_event.h"
 
-midi_event::midi_event(std::vector<uint8_t>* message)
+midi_event::midi_event(std::vector<uint8_t>* message,midi_port* portref)
 {
+	port = portref;
 	message_size = message->size();
 	bytes = new uint8_t[message_size];
 	for(int i=0;i<message_size;++i)
@@ -30,4 +31,34 @@ uint8_t midi_event::operator[](int index)
 int midi_event::size()
 {
 	return message_size;
+}
+
+void midi_event::handle()
+{
+	lua_State* L = this->port->get_lua();
+	//meta is on top of the stack
+	luaL_getmetatable(L,midi_port::METATABLE_NAME);
+	lua_pushlightuserdata(L,(void*)port);
+	lua_gettable(L,-2);
+	if(!lua_istable(L,-1))
+	{
+		std::cout<<"PANIC:no registry\n";
+		return;
+	}
+	//so either the event registry is on top of the stack
+	lua_pushnumber(L,bytes[0]);
+	lua_gettable(L,-2);
+	//so now the method or nil is on top of the stack
+	if(!lua_isfunction(L,-1))
+	{
+		return;
+	}
+	
+	for(int i=0;i<message_size;++i)
+	{
+		lua_pushnumber(L,bytes[i]);
+	}
+	
+	lua_call(L,message_size,0);
+
 }

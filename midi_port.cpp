@@ -1,4 +1,5 @@
 #include "midi_port.h"
+#include "midi_event.h"
 
 void midi_callback(double deltatime, std::vector< unsigned char > *message, void *userData)
 {
@@ -6,15 +7,16 @@ void midi_callback(double deltatime, std::vector< unsigned char > *message, void
 
 	event.type = SDL_USEREVENT;
 	event.user.code = 1;
-	event.user.data1 = (void*)new midi_event(message);
+	event.user.data1 = (void*)new midi_event(message,(midi_port*)userData);
 	event.user.data2 = userData;
 	
 	//THIS COPIES THE EVENT
 	SDL_PushEvent(&event);
 }
 
-midi_port::midi_port():
-inport()
+midi_port::midi_port(lua_State* luaref):
+inport(),
+L(luaref)
 {
 
 	for(int i=0;i<127;++i)
@@ -27,8 +29,9 @@ inport()
 	inport.setCallback(midi_callback,this);
 }
 
-midi_port::midi_port(int port_number):
-inport()
+midi_port::midi_port(int in_port, lua_State* luaref):
+inport(),
+L(luaref)
 {
 
 	for(int i=0;i<127;++i)
@@ -38,7 +41,7 @@ inport()
 
 	//for now
 	inport.ignoreTypes(true,true,true);
-	inport.openPort(port_number);
+	inport.openPort(in_port);
 	inport.setCallback(midi_callback,this);
 }
 
@@ -47,6 +50,10 @@ void midi_port::ignore_type(bool sysex, bool time, bool sense)
 	inport.ignoreTypes(sysex,time,sense);
 }
 
+lua_State* midi_port::get_lua()
+{
+	return L;
+}
 
 //-------------------------------------------------------------------------------------------------
 //						_/        _/    _/    _/_/    
@@ -168,7 +175,7 @@ int midi_port::new_midi_port(lua_State *L)
 	midi_port* port;
 	try
 	{
-		port = new midi_port(portnum);
+		port = new midi_port(portnum,L);
 	}
 	catch(RtError rte)
 	{

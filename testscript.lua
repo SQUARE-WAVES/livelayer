@@ -1,5 +1,5 @@
---[[p = new_serial_port("COM3")
-midi = new_midi_port(0)
+p = new_serial_port("COM3")
+midi = new_midi_port(8)
 
 p:onread(function(str)
 	print("LOOPBACK: " .. str)
@@ -9,7 +9,7 @@ end)
 midi:MIDIin(0x90,function(status,note,vel)
 	p:write(string.format("n: 0x%X 0x%X",note,vel))
 end)
-]]--
+--[[
 
 chip1,chip2 = dofile('chips.lua')
 midi_port = new_midi_port(8)
@@ -43,7 +43,7 @@ event_handlers_table.mousemove_handler = function(x,y)
 end
 
 
---[[
+
 event_handlers_table = {}
 midi_port = new_midi_port(8)
 

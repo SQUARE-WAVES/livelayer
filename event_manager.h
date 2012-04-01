@@ -2,15 +2,9 @@
 #define EVENT_MANAGER_DOT_H
 
 #include "midi_port.h"
+#include "midi_event.h"
 #include "serial_port.h"
 #include "serial_event.h"
-
-class event
-{
-	public:
-		virtual int id() = 0;
-		virtual void* data(int data_id) =0;
-};
 
 class event_manager
 {
