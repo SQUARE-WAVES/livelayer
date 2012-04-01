@@ -25,13 +25,17 @@ class serial_port
 		char inbuff[IN_BUFFER_SIZE];
 		boost::circular_buffer<char> outbuffer;
 		
+		lua_State* L;
+		
 	public:
 		static void stop();		
-		serial_port(const char* filename);
+		serial_port(const char* filename,lua_State* luaref);
 		void write(const char* buffer, int len);
 		
 		void onwrite(const boost::system::error_code& error,std::size_t bytes_transferred);
 		void onread(const boost::system::error_code& error,std::size_t bytes_transferred);
+		
+		lua_State* get_lua();
 		
 		//lua shit
 		const static char* METATABLE_NAME;

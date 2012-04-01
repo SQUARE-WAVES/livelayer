@@ -1,7 +1,9 @@
 #include "SDL.h"
 #include "serial_event.h"
 
-serial_event::serial_event(uint8_t* message,int len)
+serial_event::serial_event(uint8_t* message,int len,serial_port* portref):
+len(len),
+port(portref)
 {
 	this->len = len;
 	bytes = new uint8_t[len];
@@ -26,4 +28,30 @@ int serial_event::size()
 uint8_t* serial_event::getbytes()
 {
 	return bytes;
+}
+
+void serial_event::handle()
+{
+	lua_State* L = port->get_lua();
+	luaL_getmetatable(L,serial_port::METATABLE_NAME);
+	lua_pushlightuserdata(L,(void*)port);
+	lua_gettable(L,-2);
+	
+	if(!lua_istable(L,-1))
+	{
+		std::cout<<"PANIC:no registry\n";
+		return;
+	}
+	
+	//now we have the registry on top of the stack
+	lua_pushliteral(L,"read");
+	lua_gettable(L,-2);
+	
+	if(!lua_isfunction(L,-1))
+	{
+		return;
+	}
+	
+	lua_pushlstring(L,(const char*)bytes,len);
+	lua_call(L,1,0);
 }

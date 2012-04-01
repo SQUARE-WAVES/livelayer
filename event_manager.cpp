@@ -42,7 +42,8 @@ void event_manager::midi_event_handler(midi_event& ev,midi_port* port)
 
 void event_manager::serial_event_handler(serial_event& ev, serial_port* port)
 {
-	//get that meta on top of the stack
+	ev.handle();
+	/*/get that meta on top of the stack
 	luaL_getmetatable(*L,serial_port::METATABLE_NAME);
 	lua_pushlightuserdata(*L,(void*)port);
 	lua_gettable(*L,-2);
@@ -64,7 +65,7 @@ void event_manager::serial_event_handler(serial_event& ev, serial_port* port)
 	
 	lua_pushlstring(*L,(const char*)ev.getbytes(),ev.size());
 	lua_call(*L,1,0);
-	
+	*/
 }
 
 void event_manager::keyup_handler(SDL_Event& ev)

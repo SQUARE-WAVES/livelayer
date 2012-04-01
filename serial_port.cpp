@@ -6,9 +6,10 @@ boost::thread serial_port::th(threadfunc);
 boost::asio::io_service serial_port::io;
 boost::asio::io_service::work serial_port::wrk(io);
 
-serial_port::serial_port(const char* filename):
+serial_port::serial_port(const char* filename,lua_State* luaref):
 port(io,filename),
-outbuffer(OUT_BUFFER_SIZE)
+outbuffer(OUT_BUFFER_SIZE),
+L(luaref)
 {
 	memset(inbuff,0,IN_BUFFER_SIZE);
 	port.async_read_some(boost::asio::buffer(inbuff,256),boost::bind(&serial_port::onread,this,_1,_2));
@@ -20,7 +21,7 @@ void serial_port::onread(const boost::system::error_code& error,std::size_t byte
 	
 	event.type = SDL_USEREVENT;
 	event.user.code = 2;
-	event.user.data1 = (void*)new serial_event((uint8_t*)inbuff,bytes_transferred);
+	event.user.data1 = (void*)new serial_event((uint8_t*)inbuff,bytes_transferred,this);
 	event.user.data2 = this;
 	
 	//THIS COPIES THE EVENT
@@ -79,6 +80,11 @@ void serial_port::onwrite(const boost::system::error_code& error,std::size_t byt
 	}
 }
 
+lua_State* serial_port::get_lua()
+{
+	return L;
+}
+
 
 
 //-------------------------------------------------------------------------------------------------
@@ -122,7 +128,7 @@ int serial_port::new_serialport(lua_State *L)
 	
 	try
 	{
-		port = new serial_port(filename);
+		port = new serial_port(filename,L);
 	}
 	catch(std::exception ex)
 	{
