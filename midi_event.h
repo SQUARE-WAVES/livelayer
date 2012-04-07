@@ -5,7 +5,9 @@
 #include "event.h"
 #include <vector>
 
-class midi_event
+using boost::uint8_t;
+
+class midi_event : public event
 {
 	private:
 		int message_size;

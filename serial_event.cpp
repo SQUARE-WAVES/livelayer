@@ -1,4 +1,4 @@
-#include "SDL.h"
+#include <boost/cstdint.hpp>
 #include "serial_event.h"
 
 serial_event::serial_event(uint8_t* message,int len,serial_port* portref):

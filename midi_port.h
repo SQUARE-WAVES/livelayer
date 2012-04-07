@@ -1,7 +1,7 @@
 #ifndef MIDI_PORT_DOT_H
 #define MIDI_PORT_DOT_H
 
-#include "SDL.h"
+#include <boost/cstdint.hpp>
 #include <lua.hpp>
 #include "lua_wrapper.h"
 #include "rtmidi.h"

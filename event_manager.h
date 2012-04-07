@@ -10,23 +10,21 @@ class event_manager
 {
 	private:
 		lua_wrapper* L;
-		void dispatch_uevent(SDL_Event &ev);
-		void midi_event_handler(midi_event& ev,midi_port* port);
-		void serial_event_handler(serial_event& ev, serial_port* port);
-		void keyup_handler(SDL_Event& ev);
-		void keydown_handler(SDL_Event& ev);
-		void mousemove_handler(SDL_Event& ev);
-		void mousebuttondown_handler(SDL_Event& ev);
-		void mousebuttonup_handler(SDL_Event& ev);
+		
+		boost::mutex mutex;
+		Message_Queue<event*> event_queue;
 		
 	public:
-	
-		static const int MIDI_EVENT = 1;
-		static const int SERIAL_READ = 2;
 		event_manager(lua_wrapper* l);
 		
-		void dispatch_event(SDL_Event& ev);
+		void push_event(event* ev);
+		void event_loop();
 		
 };
+
+namespace globals
+{
+	extern event_manager evm;
+}
 
 #endif

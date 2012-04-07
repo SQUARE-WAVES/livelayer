@@ -1,3 +1,4 @@
+#include "event_manager.h"
 #include "serial_port.h"
 #include "serial_event.h"
 #include <iostream>
@@ -17,15 +18,7 @@ L(luaref)
 
 void serial_port::onread(const boost::system::error_code& error,std::size_t bytes_transferred)
 {
-	SDL_Event event;
-	
-	event.type = SDL_USEREVENT;
-	event.user.code = 2;
-	event.user.data1 = (void*)new serial_event((uint8_t*)inbuff,bytes_transferred,this);
-	event.user.data2 = this;
-	
-	//THIS COPIES THE EVENT
-	SDL_PushEvent(&event);
+	globals::evm.push_event(new serial_event((uint8_t*)inbuff,bytes_transferred,this));
 	
 	//and set up for the next read
 	memset(inbuff,0,strlen(inbuff));

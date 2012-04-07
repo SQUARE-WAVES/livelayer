@@ -1,4 +1,4 @@
-#include "SDL.h"
+#include <boost/cstdint.hpp>
 #include "rtmidi.h"
 #include "lua_wrapper.h"
 #include "midi_port.h"
@@ -7,20 +7,13 @@
 #include <iostream>
 
 
+lua_wrapper lua;
+event_manager globals::evm(&lua);
 
 int main(int argc,char* argv[])
 {	
-
-	lua_wrapper lua;
-	event_manager evm(&lua);
+	using globals::evm;
 	
-	if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) 
-	{
-		fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
-		exit(1);
-	}
-	
-	atexit(SDL_Quit);
 	lua.register_module(midi_port::register_midiport);
 	lua.register_module(serial_port::register_serialport);
 	
@@ -30,6 +23,8 @@ int main(int argc,char* argv[])
 		return -1;
 	}
 	
+	evm.event_loop();
+	/*
 	SDL_Event event;
 	
 	mainloop:
@@ -44,6 +39,6 @@ int main(int argc,char* argv[])
 		SDL_Delay(1);
 	}
 	goto mainloop;
-	
+	*/
 	return 0;
 }

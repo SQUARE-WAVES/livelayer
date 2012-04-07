@@ -1,7 +1,8 @@
 #ifndef SERIAL_PORT_DOT_H
 #define SERIAL_PORT_DOT_H
 #define _WIN32_WINNT 0x0501
-#include <SDL.h>
+
+#include <boost/cstdint.hpp>
 #include <boost/circular_buffer.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>

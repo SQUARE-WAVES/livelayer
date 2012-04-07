@@ -3,7 +3,9 @@
 #include "event.h"
 #include "serial_port.h"
 
-class serial_event
+using boost::uint8_t;
+
+class serial_event : public event
 {
 	protected:
 		uint8_t* bytes;

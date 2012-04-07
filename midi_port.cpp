@@ -1,19 +1,10 @@
+#include "event_manager.h"
 #include "midi_port.h"
 #include "midi_event.h"
 
 void midi_callback(double deltatime, std::vector< unsigned char > *message, void *userData)
 {
-	SDL_Event event;
-
-	event.type = SDL_USEREVENT;
-	event.user.code = 1;
-	event.user.data1 = (void*)new midi_event(message,(midi_port*)userData);
-	event.user.data2 = userData;
-	
-	//THIS COPIES THE EVENT
-	SDL_PushEvent(&event);
-	
-	
+	globals::evm.push_event(new midi_event(message,(midi_port*)userData));
 }
 
 midi_port::midi_port(lua_State* luaref):
