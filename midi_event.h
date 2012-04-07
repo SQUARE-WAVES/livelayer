@@ -5,7 +5,7 @@
 #include "event.h"
 #include <vector>
 
-class midi_event : public event
+class midi_event
 {
 	private:
 		int message_size;

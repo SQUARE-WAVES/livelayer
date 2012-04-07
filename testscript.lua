@@ -9,6 +9,10 @@ end)
 midi:MIDIin(0x90,function(status,note,vel)
 	p:write(string.format("n: 0x%X 0x%X",note,vel))
 end)
+
+--[[midi:MIDIin(0xE0,function(status,note,vel)
+	print(string.format("n: 0x%X 0x%X 0x%X",status, note,vel))
+end)]]--
 --[[
 
 chip1,chip2 = dofile('chips.lua')

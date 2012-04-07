@@ -7,6 +7,7 @@ midi_event::midi_event(std::vector<uint8_t>* message,midi_port* portref)
 	port = portref;
 	message_size = message->size();
 	bytes = new uint8_t[message_size];
+	
 	for(int i=0;i<message_size;++i)
 	{
 		bytes[i] = message->at(i);
@@ -15,7 +16,7 @@ midi_event::midi_event(std::vector<uint8_t>* message,midi_port* portref)
 
 midi_event::~midi_event()
 {
-	delete bytes;
+	delete[] bytes;
 }
 
 uint8_t midi_event::get_status()
@@ -36,6 +37,7 @@ int midi_event::size()
 void midi_event::handle()
 {
 	lua_State* L = this->port->get_lua();
+	int stacktop = lua_gettop(L);
 	//meta is on top of the stack
 	luaL_getmetatable(L,midi_port::METATABLE_NAME);
 	lua_pushlightuserdata(L,(void*)port);
@@ -43,6 +45,7 @@ void midi_event::handle()
 	if(!lua_istable(L,-1))
 	{
 		std::cout<<"PANIC:no registry\n";
+		lua_settop(L,stacktop);
 		return;
 	}
 	//so either the event registry is on top of the stack
@@ -51,6 +54,7 @@ void midi_event::handle()
 	//so now the method or nil is on top of the stack
 	if(!lua_isfunction(L,-1))
 	{
+		lua_settop(L,stacktop);
 		return;
 	}
 	

@@ -13,59 +13,12 @@ event_manager::event_manager(lua_wrapper* l)
 void event_manager::midi_event_handler(midi_event& ev,midi_port* port)
 {
 	ev.handle();
-	/*/meta is on top of the stack
-	luaL_getmetatable(*L,midi_port::METATABLE_NAME);
-	lua_pushlightuserdata(*L,(void*)port);
-	lua_gettable(*L,-2);
-	if(!lua_istable(*L,-1))
-	{
-		std::cout<<"PANIC:no registry\n";
-		return;
-	}
-	//so either the event registry is on top of the stack
-	lua_pushnumber(*L,ev.get_status());
-	lua_gettable(*L,-2);
-	//so now the method or nil is on top of the stack
-	if(!lua_isfunction(*L,-1))
-	{
-		return;
-	}
-	
-	for(int i=0;i<ev.size();++i)
-	{
-		lua_pushnumber(*L,ev[i]);
-	}
-	
-	lua_call(*L,ev.size(),0);*/
 }
 
 
 void event_manager::serial_event_handler(serial_event& ev, serial_port* port)
 {
 	ev.handle();
-	/*/get that meta on top of the stack
-	luaL_getmetatable(*L,serial_port::METATABLE_NAME);
-	lua_pushlightuserdata(*L,(void*)port);
-	lua_gettable(*L,-2);
-	
-	if(!lua_istable(*L,-1))
-	{
-		std::cout<<"PANIC:no registry\n";
-		return;
-	}
-	
-	//now we have the registry on top of the stack
-	lua_pushliteral(*L,"read");
-	lua_gettable(*L,-2);
-	
-	if(!lua_isfunction(*L,-1))
-	{
-		return;
-	}
-	
-	lua_pushlstring(*L,(const char*)ev.getbytes(),ev.size());
-	lua_call(*L,1,0);
-	*/
 }
 
 void event_manager::keyup_handler(SDL_Event& ev)

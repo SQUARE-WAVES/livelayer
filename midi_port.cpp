@@ -12,6 +12,8 @@ void midi_callback(double deltatime, std::vector< unsigned char > *message, void
 	
 	//THIS COPIES THE EVENT
 	SDL_PushEvent(&event);
+	
+	
 }
 
 midi_port::midi_port(lua_State* luaref):
