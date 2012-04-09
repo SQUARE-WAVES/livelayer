@@ -3,9 +3,14 @@
 #include "serial_event.h"
 #include <iostream>
 
-boost::thread serial_port::th(threadfunc);
 boost::asio::io_service serial_port::io;
-boost::asio::io_service::work serial_port::wrk(io);
+boost::thread serial_port::th(threadfunc);
+
+void serial_port::threadfunc()
+{
+	boost::asio::io_service::work wrk(io);
+	io.run();
+}
 
 serial_port::serial_port(const char* filename,lua_State* luaref):
 port(io,filename),
@@ -23,11 +28,6 @@ void serial_port::onread(const boost::system::error_code& error,std::size_t byte
 	//and set up for the next read
 	memset(inbuff,0,strlen(inbuff));
 	port.async_read_some(boost::asio::buffer(inbuff,256),boost::bind(&serial_port::onread,this,_1,_2));
-}
-
-void serial_port::threadfunc()
-{
-	io.run();
 }
 
 void serial_port::stop()

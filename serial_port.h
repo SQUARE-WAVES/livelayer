@@ -13,13 +13,13 @@ const int IN_BUFFER_SIZE = 256;
 
 class serial_port
 {
+
 	protected:
-	
+		
 		//boost asio shit
 		static boost::thread th;
 		static boost::asio::io_service io;
 		static void threadfunc();
-		static boost::asio::io_service::work wrk;
 
 		//port shit
 		boost::asio::serial_port port;
