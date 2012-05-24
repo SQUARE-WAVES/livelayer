@@ -1,20 +1,3 @@
-p = new_serial_port("COM3")
-midi = new_midi_port(8)
-
-p:onread(function(str)
-	print("LOOPBACK: " .. str)
-end)
-
-
-midi:MIDIin(0x90,function(status,note,vel)
-	p:write(string.format("n: 0x%X 0x%X",note,vel))
-end)
-
---[[midi:MIDIin(0xE0,function(status,note,vel)
-	print(string.format("n: 0x%X 0x%X 0x%X",status, note,vel))
-end)]]--
---[[
-
 chip1,chip2 = dofile('chips.lua')
 midi_port = new_midi_port(8)
 
@@ -34,10 +17,32 @@ for i=0,2 do
 
 	midi_port:MIDIin(0x80+i,function(status,note,val)
 		chip1.amp(0+i,0x0F)
-	end)
-	
+	end)	
 end
 
+
+
+--[[
+p = new_serial_port("COM3")
+midi = new_midi_port(8)
+
+p:onread(function(str)
+	print("LOOPBACK: " .. str)
+end)
+
+
+midi:MIDIin(0x90,function(status,note,vel)
+	p:write(string.format("n: 0x%X 0x%X",note,vel))
+end)
+]]--
+
+--[[
+midi:MIDIin(0xE0,function(status,note,vel)
+	print(string.format("n: 0x%X 0x%X 0x%X",status, note,vel))
+end)
+]]--
+
+--[[
 event_handlers_table = {}
 event_handlers_table.mousemove_handler = function(x,y)
 	print('move:',x,y)
@@ -45,8 +50,6 @@ event_handlers_table.mousemove_handler = function(x,y)
 	chip1.amp(1,0x0F)
 	chip1.amp(2,0x0F)
 end
-
-
 
 event_handlers_table = {}
 midi_port = new_midi_port(8)

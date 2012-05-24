@@ -6,7 +6,6 @@
 #include "event_manager.h"
 #include <iostream>
 
-
 lua_wrapper lua;
 event_manager globals::evm(&lua);
 
@@ -24,21 +23,6 @@ int main(int argc,char* argv[])
 	}
 	
 	evm.event_loop();
-	/*
-	SDL_Event event;
-	
-	mainloop:
-  {
-    // Poll for SDL events, and handle the ones we care about.
 
-    while (SDL_PollEvent(&event)) 
-    {
-			evm.dispatch_event(event);
-		}
-
-		SDL_Delay(1);
-	}
-	goto mainloop;
-	*/
 	return 0;
 }
