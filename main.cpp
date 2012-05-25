@@ -16,7 +16,7 @@ int main(int argc,char* argv[])
 	lua.register_module(midi_port::register_midiport);
 	lua.register_module(serial_port::register_serialport);
 	
-	if(0 != lua.open_script("testscript.lua"))
+	if(0 != lua.open_script("./scripts/testscript.lua"))
 	{
 		lua.print_error();
 		return -1;
