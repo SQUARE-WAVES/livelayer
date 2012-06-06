@@ -1,5 +1,5 @@
-local serial = dofile("serial_section.lua")
-local mtof,print_note = dofile("mtof.lua")
+local serial = require("serial_section")
+local mtof,print_note = require("mtof")
 local bit = require("bit")
 
 --constants!

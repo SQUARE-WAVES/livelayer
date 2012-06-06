@@ -13,12 +13,16 @@ class event_manager
 		
 		boost::mutex mutex;
 		Message_Queue<event*> event_queue;
+		bool keep_running;
 		
 	public:
 		event_manager(lua_wrapper* l);
 		
 		void push_event(event* ev);
 		void event_loop();
+		
+		//lua stuff
+		
 		
 };
 

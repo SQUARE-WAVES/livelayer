@@ -61,7 +61,7 @@ void serial_port::write(const char* buffer, int len)
 
 void serial_port::onwrite(const boost::system::error_code& error,std::size_t bytes_transferred)
 {
-	for(int i=0;i<bytes_transferred;++i)
+	for(unsigned int i=0;i<bytes_transferred;++i)
 	{
 		outbuffer.pop_front();
 	}
@@ -146,7 +146,7 @@ int serial_port::new_serialport(lua_State *L)
 
 int serial_port::collect_serialport(lua_State *L)
 {
-	serial_port* port =*((serial_port**)luaL_checkudata(L,1,serial_port::METATABLE_NAME));
+	serial_port* port = *((serial_port**)luaL_checkudata(L,1,serial_port::METATABLE_NAME));
 	
 	//kill it's method registry
 	luaL_getmetatable(L,serial_port::METATABLE_NAME);

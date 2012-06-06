@@ -1,7 +1,4 @@
-require("pack")
 local bit = require("bit")
-
-
 require("pack") --for string.pack
 
 local p --this is the port

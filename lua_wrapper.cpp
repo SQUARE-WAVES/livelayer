@@ -4,7 +4,10 @@
 lua_wrapper::lua_wrapper()
 {
 	L = lua_open();
-	luaL_openlibs(L);
+	luaL_openlibs(L);	
+	
+	//set up the path
+	luaL_dostring(L,"package.path = package.path .. ';scripts/?.lua'");
 }
 
 lua_wrapper::~lua_wrapper()

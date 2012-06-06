@@ -7,6 +7,7 @@
 
 event_manager::event_manager(lua_wrapper* l):
 event_queue(1024),
+keep_running(true),
 mutex()
 {
 	L = l;
@@ -14,7 +15,7 @@ mutex()
 
 void event_manager::event_loop()
 {
-	while(1)
+	while(keep_running)
 	{
 		//lock this so this function waits until events are available
 		//mutex.lock();

@@ -1,8 +1,11 @@
-chip1,chip2 = dofile('chips.lua')
+
+chip1,chip2 = require('chips')
 midi_port = new_midi_port(8)
 
 chip1.init()
 chip2.init()
+
+
 
 --setup the note on and note off handlers
 for i=0,2 do
