@@ -1,11 +1,15 @@
 #ifndef EVENT_DOT_H
 #define EVENT_DOT_H
 
-class event
+#include <Windows.h>
+
+class event : public OVERLAPPED
 {
 	protected:
 		
 	public:
+		event();
+
 		virtual void handle() = 0; //executes the event
 		virtual ~event() {} //no pure virtual destructors!
 };

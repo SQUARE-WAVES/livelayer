@@ -1,10 +1,20 @@
 #ifndef MIDI_PORT_DOT_H
 #define MIDI_PORT_DOT_H
 
-#include <boost/cstdint.hpp>
-#include <lua.hpp>
-#include "lua_wrapper.h"
 #include "rtmidi.h"
+#include "event_loop.h"
+#include "event.h"
+
+class midi_event : public event
+{
+	protected:
+		std::vector<unsigned char>* mess;
+
+	public:
+		midi_event(std::vector<unsigned char> *message);
+		~midi_event();
+		void handle();
+};
 
 class midi_port
 {
@@ -13,25 +23,18 @@ class midi_port
 		std::vector<unsigned char> message;
 		bool status_registry[127];
 		bool active;
+
+		event_loop* loop;
 		
-		lua_State* L;
+		static void midi_callback(double timeStamp, std::vector<unsigned char>* message, void *userData);
+
+		void midi_in(double timeStamp,std::vector<unsigned char>* message);
 		
 	public:
-		midi_port(lua_State* L);
-		midi_port(int in_port, lua_State* L);
-		//bool is_registered(uint8_t status);
+		midi_port();
+		midi_port(event_loop* looper,int in_port);
+
 		void ignore_type(bool sysex, bool time, bool sense);
-		lua_State* get_lua();
-		
-		//lua shit
-		static const char* METATABLE_NAME;
-		static void register_midiport(lua_wrapper& L);
-		
-		static int register_status(lua_State *L);
-		static int lua_ignore_type(lua_State *L);
-		
-		static int new_midi_port(lua_State *L);
-		static int collect_midi_port(lua_State *L);
 };
 
 #endif

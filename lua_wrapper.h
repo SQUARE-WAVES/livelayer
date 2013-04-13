@@ -18,7 +18,6 @@ class lua_wrapper
 		void print_error();
 		void register_function(const char* name, int (*method) (lua_State* Lwrap));
 		void register_module(void (*method)(lua_wrapper& L));
-		
 };
 
 #endif

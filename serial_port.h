@@ -1,51 +1,52 @@
 #ifndef SERIAL_PORT_DOT_H
 #define SERIAL_PORT_DOT_H
-#define _WIN32_WINNT 0x0501
 
-#include <boost/cstdint.hpp>
-#include <boost/circular_buffer.hpp>
-#include <boost/asio.hpp>
-#include <boost/thread.hpp>
+#include <stdint.h>
 #include "lua_wrapper.h"
+#include "event.h"
+#include "event_loop.h"
 
-const int OUT_BUFFER_SIZE = 256;
-const int IN_BUFFER_SIZE = 256;
+class serial_port;
+
+class serial_read_event : public event
+{
+	serial_port* home_port;
+
+	public:
+		serial_read_event(serial_port* port);
+		void handle();
+};
+
+class serial_write_event : public event
+{
+	serial_port* home_port;
+
+	public:
+		serial_write_event(serial_port* port);
+		void handle();
+};
+
 
 class serial_port
 {
-
 	protected:
+		event_loop* loop;
+		char in_buff[256];
 		
-		//boost asio shit
-		static boost::thread th;
-		static boost::asio::io_service io;
-		static void threadfunc();
+		serial_read_event read_ev;
+		serial_write_event write_ev;
 
-		//port shit
-		boost::asio::serial_port port;
-		char inbuff[IN_BUFFER_SIZE];
-		boost::circular_buffer<char> outbuffer;
+		void start_read();
+
+		//platform specifics---------------------------------------------------------------------------
+		HANDLE port_handle;
 		
-		lua_State* L;
-		
+
 	public:
-		static void stop();		
-		serial_port(const char* filename,lua_State* luaref);
-		void write(const char* buffer, int len);
-		
-		void onwrite(const boost::system::error_code& error,std::size_t bytes_transferred);
-		void onread(const boost::system::error_code& error,std::size_t bytes_transferred);
-		
-		lua_State* get_lua();
-		
-		//lua shit
-		const static char* METATABLE_NAME;
-		
-		static void register_serialport(lua_wrapper& L);
-		static int new_serialport(lua_State *L);
-		static int collect_serialport(lua_State *L);
-		static int read_event(lua_State *L);
-		static int lua_write(lua_State *L);
+		serial_port(event_loop* looper,const char* port_name);
+		void write(char* buff,int size);
+		void on_read();
+		void on_write();
 };
 
 #endif
