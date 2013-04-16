@@ -5,7 +5,7 @@
 class event_loop
 {
 	private:
-		
+		static const int exit_key = -1;
 		bool keep_running;
 
 		void wait_for_events();
@@ -26,6 +26,7 @@ class event_loop
 		HANDLE get_handle();
 
 		void post_event(event* ev,int key);
+		void stop();
 		void run();
 };
 

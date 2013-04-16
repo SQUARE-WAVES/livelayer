@@ -33,16 +33,17 @@ write_ev(this)
 
 	if(port_handle == INVALID_HANDLE_VALUE)
 	{
-		//TODO::EXCEPTION!
-		std::cout << "port creation error \n";
+		throw std::exception("port open failed");
 	}
 
 	HANDLE iocp_success = CreateIoCompletionPort(port_handle,looper->get_handle(),1,1);
 
 	if(iocp_success != looper->get_handle())
 	{
-		//TODO::EXCEPTION!
-		std::cout << "serial port iocp add error\n";
+		//close the port handle before throwing
+		CloseHandle(port_handle);
+
+		throw std::exception("add port to iocp failed");
 	}
 
 	//ok set the timeouts
@@ -68,16 +69,24 @@ void serial_port::start_read()
 
 void serial_port::on_read()
 {
-	std::cout << "serial read complete: " << in_buff <<'\n';
+	read_callback();
 	start_read();
 }
 
 void serial_port::on_write()
 {
-	std::cout << "serial write complete\n";
+		write_callback();
 }
 
 void serial_port::write(char* buffer, int len)
 {
 	WriteFile(port_handle,buffer,len,NULL,&write_ev);
+}
+
+void serial_port::read_callback()
+{
+}
+
+void serial_port::write_callback()
+{
 }

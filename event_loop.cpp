@@ -52,3 +52,8 @@ HANDLE event_loop::get_handle()
 {
 	return iocp_handle;
 }
+
+void event_loop::stop()
+{
+	post_event(NULL,-1);
+}

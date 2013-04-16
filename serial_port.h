@@ -40,8 +40,10 @@ class serial_port
 
 		//platform specifics---------------------------------------------------------------------------
 		HANDLE port_handle;
-		
 
+		virtual void read_callback();
+		virtual void write_callback();
+		
 	public:
 		serial_port(event_loop* looper,const char* port_name);
 		void write(char* buff,int size);
