@@ -22,7 +22,7 @@ class midi_event : public event
 
 		midi_event(midi_port* origin, std::vector<unsigned char> *message);
 		~midi_event();
-		void handle();
+		void handle(int iobytes);
 };
 
 class midi_port
@@ -40,7 +40,8 @@ class midi_port
 		virtual void sysex_callback (std::vector<unsigned char>* message);
 
 	public:
-		static std::vector<const char*> enumerate_midi_ports();
+		static int count_midi_ports();
+		static std::string port_name(int port_number);
 
 		midi_port();
 		midi_port(event_loop* looper,int in_port);

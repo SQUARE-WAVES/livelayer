@@ -8,7 +8,7 @@ home_port(emitter)
 
 }
 
-void serial_read_event::handle()
+void serial_read_event::handle(int iobytes)
 {
 	home_port->on_read();
 }
@@ -20,7 +20,7 @@ home_port(emitter)
 
 }
 
-void serial_write_event::handle()
+void serial_write_event::handle(int iobytes)
 {
 	home_port->on_write();
 }

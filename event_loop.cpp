@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include "lua_wrapper.h"
 #include "event.h"
 #include "event_loop.h"
 #include <iostream>
@@ -20,26 +19,36 @@ keep_running(true)
 	init_windows();
 }
 
-void event_loop::wait_for_events()
+int event_loop::wait_for_events()
 {
 	overlapped = NULL;
 	io_bytes = 0;
 	comp_key = 0;
 	GetQueuedCompletionStatus(iocp_handle,&io_bytes,&comp_key,&overlapped,INFINITE);
+	return io_bytes;
 }
 
-void event_loop::handle_events()
+void event_loop::handle_events(int iobytes)
 {
-	event* ev = (event*)overlapped;
-	ev->handle();
+	if(comp_key != -1)
+	{
+		event* ev = (event*)overlapped;
+		ev->handle(iobytes);
+	}
+	else
+	{
+		keep_running = false;
+	}
 }
 
 void event_loop::run()
 {
+	keep_running = true;
+
 	while(keep_running)
 	{
-		wait_for_events();
-		handle_events();
+		int io_bytes = wait_for_events();
+		handle_events(io_bytes);
 	}
 }
 

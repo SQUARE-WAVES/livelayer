@@ -5,5 +5,6 @@
 #include "event_loop.h"
 #include "serial_port.h"
 #include "midi_port.h"
+#include "udp_port.h"
 
 #endif

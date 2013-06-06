@@ -2,7 +2,6 @@
 #define SERIAL_PORT_DOT_H
 
 #include <stdint.h>
-#include "lua_wrapper.h"
 #include "event.h"
 #include "event_loop.h"
 
@@ -14,7 +13,7 @@ class serial_read_event : public event
 
 	public:
 		serial_read_event(serial_port* port);
-		void handle();
+		void handle(int iobytes);
 };
 
 class serial_write_event : public event
@@ -23,7 +22,7 @@ class serial_write_event : public event
 
 	public:
 		serial_write_event(serial_port* port);
-		void handle();
+		void handle(int iobytes);
 };
 
 

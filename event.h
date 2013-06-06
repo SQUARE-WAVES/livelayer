@@ -10,7 +10,7 @@ class event : public OVERLAPPED
 	public:
 		event();
 
-		virtual void handle() = 0; //executes the event
+		virtual void handle(int iobytes) = 0; //executes the event
 		virtual ~event() {} //no pure virtual destructors!
 };
 

@@ -14,7 +14,8 @@ for i=0,127 do
 	local freq = 440*math.pow(2,(i-69)/12)
 	local settings = round((4000000/(32*freq)))
 	local tenbit = bit.band(settings,0x3FF)
-	mtoftable[i] = {bit.rshift(settings,4),bit.band(settings,0xF)}
+	mtoftable[i] = {tenbit}
+	--mtoftable[i] = {bit.rshift(settings,4),bit.band(settings,0xF)}
 end
 
 print('made the mtof table')
@@ -28,6 +29,28 @@ local function print_note(nn)
 	local f = 440*math.pow(2,(nn-69)/12)
 	print(string.format("freq: %d high: 0x%X, low: 0x%X",f,unpack(mtoftable[nn])))
 end
+
+
+local make_tabs = function()
+
+	file = io.open("mtabs.txt","w");
+	
+	file:write("hi bytes\n\n");
+	for i = 0,127 do
+		local hi,low = mtoffunction(i)
+		file:write(string.format("0x%X,\n",hi))
+	end
+	
+	file:close();
+	
+end
+
+make_tabs();
+
+
+
+
+
 
 return mtoffunction, print_note
 

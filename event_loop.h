@@ -8,8 +8,8 @@ class event_loop
 		static const int exit_key = -1;
 		bool keep_running;
 
-		void wait_for_events();
-		void handle_events();
+		int wait_for_events();
+		void handle_events(int iobytes);
 
 		//----------------PLATFORM SPECIFICS-------------------------------------------------------------
 		HANDLE iocp_handle;
@@ -18,7 +18,6 @@ class event_loop
 		DWORD comp_key;
 
 		void init_windows();
-		
 		
 	public:
 		event_loop();

@@ -21,7 +21,7 @@ home_port(origin)
 	}
 }
 
-void midi_event::handle()
+void midi_event::handle(int iobytes)
 {
 	home_port->on_midi(this);
 }
@@ -51,8 +51,17 @@ loop(looper)
 {
 	//for now
 	inport.ignoreTypes(true,true,true);
-	inport.openPort(in_port);
 	inport.setCallback(master_midi_callback,this);
+
+	try
+	{
+		inport.openPort(in_port);
+	}
+	catch(RtError rx)
+	{
+		//throw a string for now
+		throw "error opening port";
+	}
 }
 
 void midi_port::ignore_type(bool sysex, bool time, bool sense)
@@ -88,16 +97,15 @@ void midi_port::sysex_callback(std::vector<unsigned char>* message)
 {
 }
 
-std::vector<const char*> midi_port::enumerate_midi_ports()
+int midi_port::count_midi_ports()
 {
 	RtMidiIn enumerator;
-	int portcount = enumerator.getPortCount();
-	std::vector<const char*> the_ports;
+	return enumerator.getPortCount();
+}
 
-	for(int i=0; i<portcount; ++i)
-	{
-		the_ports.push_back(enumerator.getPortName(i).c_str());
-	}
-
-	return the_ports;
+std::string midi_port::port_name(int port_number)
+{
+	RtMidiIn enumerator;
+	std::string name = enumerator.getPortName(port_number);
+	return name;
 }
