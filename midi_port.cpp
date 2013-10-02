@@ -72,7 +72,7 @@ void midi_port::ignore_type(bool sysex, bool time, bool sense)
 void midi_port::midi_in(double time_stamp,std::vector<unsigned char>* message)
 {
 	midi_event* ev = new midi_event(this,message);
-	loop->post_event(ev,1);
+	loop->post_message(ev);
 }
 
 void midi_port::on_midi(midi_event* ev)
@@ -85,8 +85,6 @@ void midi_port::on_midi(midi_event* ev)
 	{
 		midi_callback(ev->status,ev->data1,ev->data2);
 	}
-
-	delete ev;
 }
 
 void midi_port::midi_callback(unsigned char status, unsigned char data1, unsigned char data2)

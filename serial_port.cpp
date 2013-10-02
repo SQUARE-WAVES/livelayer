@@ -36,7 +36,7 @@ write_ev(this)
 		throw std::exception("port open failed");
 	}
 
-	HANDLE iocp_success = CreateIoCompletionPort(port_handle,looper->get_handle(),1,1);
+	HANDLE iocp_success = CreateIoCompletionPort(port_handle,looper->get_handle(),event_loop::EVENT_KEY,1);
 
 	if(iocp_success != looper->get_handle())
 	{

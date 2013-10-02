@@ -62,7 +62,7 @@ ev(this)
 		std::cout << " ind() port: "<<portnum<<" failed, Err: "<<WSAGetLastError()<<'\n'; 
   }
 
-	CreateIoCompletionPort((HANDLE)sock,iocp_handle,1,1);
+	CreateIoCompletionPort((HANDLE)sock,iocp_handle,event_loop::EVENT_KEY,1);
 
 	int b = ReadFile ((HANDLE)sock,&buffer,sizeof(buffer),NULL,&ev);  
     

@@ -30,14 +30,23 @@ int event_loop::wait_for_events()
 
 void event_loop::handle_events(int iobytes)
 {
-	if(comp_key != -1)
+	event* ev = (event*)overlapped;
+	switch(comp_key)
 	{
-		event* ev = (event*)overlapped;
-		ev->handle(iobytes);
-	}
-	else
-	{
-		keep_running = false;
+		case EVENT_KEY:
+			ev->handle(iobytes);
+		break;
+		case MESSAGE_KEY:
+			//this is a disposable message passed in from another thread
+			ev->handle(iobytes);
+			delete ev;
+		break;
+		case EXIT_KEY:
+			keep_running = false;
+		break;
+		default:
+			throw "incomprehensible message type\n";
+		break;
 	}
 }
 
@@ -52,9 +61,14 @@ void event_loop::run()
 	}
 }
 
-void event_loop::post_event(event* ev,int key)
+void event_loop::post_event(event* ev)
 {
-	PostQueuedCompletionStatus(iocp_handle,0,key,ev);
+	PostQueuedCompletionStatus(iocp_handle,0,EVENT_KEY,ev);
+}
+
+void event_loop::post_message(event* ev)
+{
+	PostQueuedCompletionStatus(iocp_handle,0,MESSAGE_KEY,ev);
 }
 
 HANDLE event_loop::get_handle()
@@ -64,5 +78,5 @@ HANDLE event_loop::get_handle()
 
 void event_loop::stop()
 {
-	post_event(NULL,-1);
+	PostQueuedCompletionStatus(iocp_handle,0,EXIT_KEY,NULL);	
 }
