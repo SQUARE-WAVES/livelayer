@@ -13,10 +13,15 @@ home_port(origin)
 	}
 	else
 	{
-		if(message->size() != 1)
+		if(message->size() == 3)
 		{
 			data1 = message->at(1);
 			data2 = message->at(2);
+		}
+		else if(message->size() == 2)
+		{
+			data1 = message->at(1);
+			data2 = 0x00;
 		}
 	}
 }
